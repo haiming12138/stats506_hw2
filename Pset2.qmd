@@ -196,4 +196,6 @@ Y <- cars$hwy_mpg
 solve(t(X) %*% X) %*% t(X) %*% Y
 ```
 
-
+## Citation & Github Link
+* [Use of interaction_plot](https://www.youtube.com/watch?v=_QyFj3mKe7Q)
+* [GitHub Repo of this Pset](https://github.com/haiming12138/stats506_hw2.git)
