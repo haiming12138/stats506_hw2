@@ -145,3 +145,55 @@ hist(res, main='Dice Game Payoff Distribution', xlab='Payoff', freq=FALSE)
 
 ## Linear Regression
 
+a. Here's the dataset with shortened column name.
+```{r q2a}
+cars <- read.csv('cars.csv')
+names(cars) <- c(
+  "height", "length", "width", "driveline", "engine_type", "hybrid", 
+  "gears_cnt", "transmission", "city_mpg", "fuel_type", "hwy_mpg", 
+  "class", "id", "make", "model", "year", "horsepower", "torque"
+)
+```
+b. Here's the filtered dataset.
+```{r q2b}
+cars <- subset(cars, fuel_type == 'Gasoline')
+```
+c. There's an extreme value in highway mpg. Removing it can be helpful to linear regression.
+```{r q2c}
+par(mfrow= c(1,2))
+hist(cars$hwy_mpg, main='Distribution Before', xlab='hwy_mpg')
+cars <- cars[-which.max(cars$hwy_mpg),]
+hist(cars$hwy_mpg, main='Distribution After', xlab='hwy_mpg')
+```
+d. It seems that, while holding all else constant, a unit increase in torque would corresponds to 0.051748 decrease in highway mpg on average.
+```{r q2d}
+cars$year <- as.factor(cars$year)
+model_fit <- lm(hwy_mpg ~ torque + horsepower + height +
+                  length + width + year,
+                data = cars)
+summary(model_fit)
+```
+e. As shown, year 2011 have most data. Thus, I will use 2011 in the interaction plot.
+```{r q2e_1}
+table(cars$year)
+```
+  Here's the interaction plot with year 2011.
+```{r q2e_2, warning=FALSE}
+library(interactions)
+model_fit <- lm(hwy_mpg ~ torque * horsepower + height +
+                  length + width + year,
+                data = cars)
+interact_plot(model_fit, pred = torque, modx = horsepower,
+              at = list(year = factor(2011, levels(cars$year))))
+```
+
+f. For OLS, we have $\hat{\beta} = (X^TX)^{-1}X^TY$.
+```{r q2f}
+X <- model.matrix(hwy_mpg ~ torque * horsepower + height + 
+                    length + width + year,
+                  data = cars)
+Y <- cars$hwy_mpg
+solve(t(X) %*% X) %*% t(X) %*% Y
+```
+
+
