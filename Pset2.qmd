@@ -1,0 +1,12 @@
+---
+title: "STATS 506 Problem Set #2"
+author: "Haiming Li"
+format: 
+  html:
+    toc: true
+  pdf: default
+---
+
+## Dice Game
+
+## Linear Regression
