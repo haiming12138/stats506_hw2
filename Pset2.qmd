@@ -158,14 +158,14 @@ b. Here's the filtered dataset.
 ```{r q2b}
 cars <- subset(cars, fuel_type == 'Gasoline')
 ```
-c. There's an extreme value in highway mpg. Removing it can be helpful to linear regression.
+c. There's an extreme value in highway mpg. Without removing it, the best course of action is to normalize it via box-cox transformation. This would specifically benefit linear regression.
 ```{r q2c}
 par(mfrow= c(1,2))
 hist(cars$hwy_mpg, main='Distribution Before', xlab='hwy_mpg')
-cars <- cars[-which.max(cars$hwy_mpg),]
+cars$hwy_mpg <- log(cars$hwy_mpg)
 hist(cars$hwy_mpg, main='Distribution After', xlab='hwy_mpg')
 ```
-d. It seems that, while holding all else constant, a unit increase in torque would corresponds to 0.051748 decrease in highway mpg on average.
+d. It seems that, while holding all else constant, a unit increase in torque would corresponds to 0.002294 decrease in highway mpg on average.
 ```{r q2d}
 cars$year <- as.factor(cars$year)
 model_fit <- lm(hwy_mpg ~ torque + horsepower + height +
@@ -189,7 +189,7 @@ interact_plot(model_fit, pred = torque, modx = horsepower,
 
 f. For OLS, we have $\hat{\beta} = (X^TX)^{-1}X^TY$.
 ```{r q2f}
-X <- model.matrix(hwy_mpg ~ torque * horsepower + height + 
+X <- model.matrix(hwy_mpg ~ torque + horsepower + height + 
                     length + width + year,
                   data = cars)
 Y <- cars$hwy_mpg
